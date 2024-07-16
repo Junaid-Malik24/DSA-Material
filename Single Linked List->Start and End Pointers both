@@ -1,0 +1,405 @@
+#include <iostream>
+using namespace std;
+int numberValidation(int &number)
+{
+    bool validInput = false;
+    while (!validInput)
+    {
+        if (cin >> number)
+        {
+            if (number < 0)
+            {
+                cout << "Enter positive number: " << endl;
+            }
+            else
+            {
+                validInput = true;
+            }
+        }
+        else
+        {
+            cin.clear();
+            while (cin.get() != '\n')
+                ;
+            cout << "Invalid input. Please enter a valid number." << endl;
+        }
+    }
+    return number;
+}
+//BCSF22M031_Single Linked List-> Two Pointers
+class SLL;
+class Node
+{
+    int data;
+    Node *link;
+public:
+    friend class SLL;
+    Node()
+    {
+        data = 0;
+        link = NULL;
+    }
+    Node(int x)
+    {
+        data = x;
+        link = NULL;
+    }
+};
+class SLL
+{
+    Node *start;
+    Node *end;
+public:
+    SLL()
+    {
+        start = NULL;
+        end = NULL; 
+    }
+    ~SLL()
+    {
+        Node *temp = start;
+        Node *next = NULL;
+        while (temp != NULL)
+        {
+            next = temp->link;
+            delete temp;
+            temp = next;
+        }
+        start = NULL;
+        end = NULL;
+    }
+    void insert_at_end(int x)
+    {
+        Node *newNode = new Node(x);
+        if (start == NULL)
+        {
+            start = newNode;
+            end = newNode; 
+        }
+        else
+        {
+            end->link = newNode; 
+            end = newNode;       
+        }
+    }
+    void insert_at_start(int x)
+    {
+        Node *temp = new Node(x);
+        temp->link = start;
+        start = temp;
+        if (end == NULL)
+            end = temp; 
+    }
+    void Print()
+    {
+        if (start == nullptr)
+        {
+            cout << "List is empty" << endl;
+        }
+        else
+        {
+            Node *temp = start;
+            while (temp != nullptr)
+            {
+                cout << temp->data << " ";
+                temp = temp->link;
+            }
+            cout << endl;
+        }
+    }
+    Node *Search(int x)
+    {
+        if (start == NULL)
+        {
+            cout << "Empty List" << endl;
+            return NULL;
+        }
+        else
+        {
+            Node *temp = start;
+            while (temp != NULL)
+            {
+                if (temp->data == x)
+                {
+                    return temp;
+                }
+                temp = temp->link;
+            }
+            return NULL;
+        }
+    }
+    void insert_before(int x, int y)
+    {
+        Node *temp1 = Search(x);
+        if (temp1 == NULL)
+        {
+            cout << x << " was not found in the single linked list" << endl;
+            return;
+        }
+        if (temp1 == start)
+        {
+            insert_at_start(y);
+        }
+        else
+        {
+            Node *temp = start;
+            Node *prev = NULL;
+            while (temp != NULL)
+            {
+                if (temp->data == x)
+                {
+                    Node *newNode = new Node(y);
+                    prev->link = newNode;
+                    newNode->link = temp;
+                    return;
+                }
+                prev = temp;
+                temp = temp->link;
+            }
+        }
+    }
+    void insert_after(int x, int y)
+    {
+        Node *temp1 = Search(x);
+        if (temp1 == NULL)
+        {
+            cout << x << " was not found in the single linked list" << endl;
+            return;
+        }
+        else
+        {
+            Node *newnode = new Node(y);
+            newnode->link = temp1->link;
+            temp1->link = newnode;
+
+            if (temp1 == end) // Update end pointer if inserting after last node
+            {
+                end = newnode;
+            }
+        }
+    }
+    void delete_first(int x)
+    {
+        Node *temp1 = Search(x);
+        if (temp1 == NULL)
+        {
+            cout << x << " was not found in the single linked list" << endl;
+            return;
+        }
+        if (temp1 == start)
+        {
+            start = temp1->link;
+            if (start == NULL)
+                end = NULL; 
+            delete temp1;
+        }
+        else
+        {
+            Node *temp = start;
+            Node *prev = NULL;
+            while (temp != NULL)
+            {
+                if (temp->data == x)
+                {
+                    prev->link = temp->link;
+                    if (temp == end)
+                        end = prev; 
+                    delete temp;
+                    return;
+                }
+                prev = temp;
+                temp = temp->link;
+            }
+        }
+    }
+    void delete_kth(int x, int k)
+    {
+        Node *temp = start;
+        Node *prev = NULL;
+        int count = 0;
+
+        if (start == NULL)
+        {
+            cout << "The list is already empty" << endl;
+            return;
+        }
+
+        while (temp != NULL)
+        {
+            if (temp->data == x)
+            {
+                count++;
+                if (count == k)
+                {
+                    if (prev == NULL)
+                    {
+                        start = temp->link;
+                        if (start == NULL)
+                            end = NULL; 
+                    }
+                    else
+                    {
+                        prev->link = temp->link;
+                        if (temp == end)
+                            end = prev; 
+                    }
+                    delete temp;
+                    cout << "The " << k << "th instance was found and deleted" << endl;
+                    return;
+                }
+            }
+            prev = temp;
+            temp = temp->link;
+        }
+        cout << "The " << k << "th instance was not found and hence not deleted" << endl;
+    }
+    void delete_all(int x)
+    {
+        if (start == NULL)
+        {
+            cout << "The list is already empty" << endl;
+            return;
+        }
+
+        Node *temp = start;
+        Node *prev = NULL;
+        bool found = false;
+
+        while (temp != NULL)
+        {
+            if (temp->data == x)
+            {
+                found = true;
+                if (prev == NULL)
+                {
+                    start = temp->link;
+                    if (start == NULL)
+                        end = NULL;
+                }
+                else
+                {
+                    prev->link = temp->link;
+                    if (temp == end)
+                        end = prev; 
+                }
+                Node *to_delete = temp;
+                temp = temp->link;
+                delete to_delete;
+            }
+            else
+            {
+                prev = temp;
+                temp = temp->link;
+            }
+        }
+        if (!found)
+        {
+            cout << x << " was not found in the single linked list" << endl;
+        }
+    }
+    void list_reverse()
+    {
+        Node *prev = NULL;
+        Node *current = start;
+        end = start; 
+        while (current != NULL)
+        {
+            Node *nextNode = current->link;
+            current->link = prev;
+            prev = current;
+            current = nextNode;
+        }
+        start = prev;
+    }
+    void print_reverse()
+    {
+        list_reverse();
+        Print();
+        list_reverse(); 
+    }
+};
+int main()
+{
+    SLL list;
+    int choice, value, target, k;
+    while (true)
+    {
+        cout << endl
+             << "        Menu" << endl
+             << endl;
+        cout << "1. Insert at end" << endl;
+        cout << "2. Insert at start" << endl;
+        cout << "3. Insert before a value" << endl;
+        cout << "4. Insert after a value" << endl;
+        cout << "5. Delete first occurrence" << endl;
+        cout << "6. Delete kth occurrence" << endl;
+        cout << "7. Delete all occurrences" << endl;
+        cout << "8. Print list" << endl;
+        cout << "9. Print reverse" << endl;
+        cout << "10. Reverse list" << endl;
+        cout << "0. Exit" << endl;
+        cout << "Enter your choice: ";
+        numberValidation(choice);
+        cout << endl;
+        switch (choice)
+        {
+        case 1:
+            cout << "Enter value to insert at end: ";
+            cin>>value;
+            list.insert_at_end(value);
+            break;
+        case 2:
+            cout << "Enter value to insert at start: ";
+            cin>>value;
+            list.insert_at_start(value);
+            break;
+        case 3:
+            cout << "Enter value to insert before: ";
+            cin>>target;
+            cout << "Enter value to insert: ";
+            cin>>value;
+            list.insert_before(target, value);
+            break;
+        case 4:
+            cout << "Enter value to insert after: ";
+            cin>>target;
+            cout << "Enter value to insert: ";
+            cin>>value;
+            list.insert_after(target, value);
+            break;
+        case 5:
+            cout << "Enter value to delete first occurrence: ";
+            cin>>value;
+            list.delete_first(value);
+            break;
+        case 6:
+            cout << "Enter value to delete: ";
+            cin>>value;
+            cout << "Enter kth occurrence to delete: ";
+            numberValidation(k);
+            list.delete_kth(value, k);
+            break;
+        case 7:
+            cout << "Enter value to delete all occurrences: ";
+            cin>>value;
+            list.delete_all(value);
+            break;
+        case 8:
+            list.Print();
+            break;
+        case 9:
+            list.print_reverse();
+            break;
+        case 10:
+            list.list_reverse();
+            cout << "List was reversed" << endl;
+            break;
+        case 0:
+            cout << "Exiting..." << endl;
+            return 0;
+        default:
+            cout << "Invalid choice, please try again." << endl;
+            break;
+        }
+    }
+}
