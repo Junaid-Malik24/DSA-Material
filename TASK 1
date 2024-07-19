@@ -1,0 +1,235 @@
+//Reverse a single linked list with only start pointer
+#include <iostream>
+using namespace std;
+class SLL;
+class Node
+{
+public:
+    int data;
+    Node *link;
+
+    friend class SLL;
+    Node()
+    {
+        data = 0;
+        link = NULL;
+    }
+    Node(int x)
+    {
+        data = x;
+        link = NULL;
+    }
+};
+class SLL
+{
+    Node *start;
+
+public:
+    SLL()
+    {
+        start = NULL;
+    }
+    Node* getStart(){
+        return this->start;
+    }
+    void insert_at_end(int x)
+    {
+        if (start == NULL)
+        {
+            start = new Node(x);
+        }
+        else
+        {
+            Node *temp;
+            temp = start;
+            while ((temp->link != NULL))
+            {
+                temp = temp->link;
+            }
+            temp->link = new Node(x);
+        }
+    }
+    void insert_at_start(int x)
+    {
+        Node *temp;
+        temp = new Node(x);
+        temp->link = start;
+        start = temp;
+    }
+    void Print()
+    {
+        if (start == nullptr)
+        {
+            cout << "List is empty" << endl;
+        }
+        else
+        {
+            Node *temp = start;
+            while (temp != nullptr)
+            {
+                cout << temp->data << " ";
+                temp = temp->link;
+            }
+            cout << endl;
+        }
+    }
+    void PrintReverse(Node*start1)
+    {
+        if (start1 == nullptr)
+        {
+            cout << "List is empty" << endl;
+        }
+        else
+        {
+            Node *temp = start1;
+            while (temp != nullptr)
+            {
+                cout << temp->data << " ";
+                temp = temp->link;
+            }
+            cout << endl;
+        }
+    }
+    Node *Search(int x)
+    {
+        if (start == NULL)
+        {
+            cout << "Empty List" << endl;
+            return NULL;
+        }
+        else
+        {
+            bool flag = false;
+            Node *temp;
+            temp = start;
+            while (temp != NULL && !flag)
+            {
+                if (temp->data == x)
+                {
+                    cout << "Found" << endl;
+                    flag = true;
+                    return temp;
+                }
+                temp = temp->link;
+            }
+            return temp;
+        }
+    }
+    void insert_before(int x, int y)
+    {
+        Node *temp1 = Search(x);
+        if (temp1 == NULL)
+        {
+            cout << x << " was not found in the single linked list" << endl;
+            return;
+        }
+        if (temp1 == start)
+        {
+            // cout<<"start haha"<<endl;
+            // return;
+            Node *temp = new Node(y);
+            temp->link = start;
+            start = temp;
+        }
+        else
+        {
+            // cout<<x<<" was found in the linked list"<<endl;
+            Node *temp = start;
+            Node *prev = NULL;
+            while (temp != NULL)
+            {
+                if (temp->data == x)
+                {
+                    Node *newNode = new Node(y);
+                    prev->link = newNode;
+                    newNode->link = temp;
+                    return;
+                }
+                prev = temp;
+                temp = temp->link;
+            }
+        }
+    }
+    void insert_after(int x, int y)
+    {
+        Node *temp1 = Search(x);
+        if (temp1 == NULL)
+        {
+            cout << x << " was not found in the single linked list" << endl;
+            return;
+        }
+        else
+        {
+            Node *temp = start;
+            while (temp != NULL)
+            {
+                if (temp->data == x)
+                {
+                    Node *newnode = new Node(y);
+                    newnode->link = temp->link;
+                    temp->link = newnode;
+                    return;
+                }
+                temp = temp->link;
+            }
+        }
+    }
+    void delete_first(int x)
+    {
+        Node *temp1 = Search(x);
+        if (temp1 == NULL)
+        {
+            cout << x << " was not found in the single linked list" << endl;
+            return;
+        }
+        if (temp1 == start)
+        {
+            start = temp1->link;
+            delete temp1;
+        }
+        else
+        {
+            Node *temp = start;
+            Node *prev = NULL;
+            while (temp != NULL)
+            {
+                if (temp->data == x)
+                {
+
+                    prev->link = temp->link;
+                    delete temp;
+                    return;
+                }
+                prev = temp;
+                temp = temp->link;
+            }
+        }
+    }
+    Node *reverseSinglyLinkedList(Node *head)
+    {
+        Node *prev;
+        prev = NULL;
+        Node *temp;
+        temp = head;
+        while (temp != NULL)
+        {
+            Node *nextNode = temp->link;
+            temp->link = prev;
+            prev = temp;
+            temp = nextNode;
+        }
+        head=prev;
+        return head;
+    }
+};
+int main()
+{
+    SLL list1;
+    list1.insert_at_end(5);
+    list1.insert_at_end(15);
+    list1.insert_at_end(150);
+    list1.insert_at_start(25);
+    list1.Print();
+    Node *temp1=list1.reverseSinglyLinkedList(list1.getStart());
+    list1.PrintReverse(temp1);
+}
