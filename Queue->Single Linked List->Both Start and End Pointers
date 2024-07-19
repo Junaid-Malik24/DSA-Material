@@ -1,0 +1,286 @@
+#include <iostream>
+using namespace std;
+int numberValidation(int &number)
+{
+    bool validInput = false;
+    while (!validInput)
+    {
+        if (cin >> number)
+        {
+            if (number < 0)
+            {
+                cout << "Enter positive number: " << endl;
+            }
+            else
+            {
+                validInput = true;
+            }
+        }
+        else
+        {
+            cin.clear();
+            while (cin.get() != '\n')
+                ;
+            cout << "Invalid input. Please enter a valid number." << endl;
+        }
+    }
+    return number;
+}
+// BCSF22M031_Queue using Single Linked List->2 Pointers
+class Queue;
+class Node
+{
+    int data;
+    Node *link;
+
+public:
+    Node()
+    {
+        data = 0;
+        link = NULL;
+    }
+    Node(int d)
+    {
+        data = d;
+        link = NULL;
+    }
+    friend class Queue;
+};
+class Queue
+{
+    Node *front;
+    Node *rear;
+
+public:
+    Queue()
+    {
+        front = NULL;
+        rear = NULL;
+    }
+    ~Queue()
+    {
+        Node *temp = front;
+        Node *next = NULL;
+        while (temp != NULL)
+        {
+            next = temp->link;
+            delete temp;
+            temp = next;
+        }
+        front = NULL;
+        rear = NULL;
+    }
+    void Enqueue(int item)
+    {
+        if (front == NULL)
+        {
+            front = new Node(item);
+            rear = front;
+        }
+        else
+        {
+            Node *newnode = new Node(item);
+            rear->link = newnode;
+            rear = newnode;
+        }
+    }
+    int Dequeue()
+    {
+        int d;
+        if (front == NULL)
+        {
+            cout << "Empty Queue.Cannot Dequeue" << endl;
+            return -999;
+        }
+        else if (front == rear)
+        {
+            rear = NULL;
+            d = front->data;
+            delete front;
+            front = NULL;
+            return d;
+        }
+        else
+        {
+            Node *temp = front->link;
+            d = front->data;
+            delete front;
+            front = temp;
+            return d;
+        }
+    }
+    void Print()
+    {
+        if (front == NULL)
+        {
+            cout << "Queue is empty" << endl;
+        }
+        else
+        {
+            cout << "Front->    ";
+            cout << "|";
+            Node *temp = front;
+            while (temp != NULL)
+            {
+                cout << temp->data << "<-";
+                temp = temp->link;
+            }
+            cout << "|   <-Rear" << endl;
+        }
+    }
+    int size()
+    {
+        Node *temp = front;
+        int count = 0;
+        while (temp != NULL)
+        {
+            count++;
+            temp = temp->link;
+        }
+        return count;
+    }
+    bool is_empty()
+    {
+        return front == NULL;
+    }
+    int peek_rear()
+    {
+        if (rear == NULL)
+        {
+            cout << "Queue is empty" << endl;
+            return -999;
+        }
+        else
+        {
+            return rear->data;
+        }
+    }
+    int peek_front()
+    {
+        if (front == NULL)
+        {
+            cout << "Queue is empty" << endl;
+            return -999;
+        }
+        else
+        {
+            return front->data;
+        }
+    }
+    int remove_rear()
+    {
+        int d;
+        if (front == NULL)
+        {
+            cout << "Empty Queue.Cannot Dequeue" << endl;
+            return -999;
+        }
+        else if (front == rear)
+        {
+            front = NULL;
+            d = rear->data;
+            delete rear;
+            rear = NULL;
+            return d;
+        }
+        else
+        {
+            Node *temp = front;
+            Node *prev = NULL;
+            while (temp->link != NULL)
+            {
+                prev = temp;
+                temp = temp->link;
+            }
+            d = temp->data;
+            delete temp;
+            if (prev != NULL)
+            {
+                prev->link = NULL;
+                rear = prev;
+            }
+            return d;
+        }
+    }
+    void add_front(int item)
+    {
+        if (front == NULL)
+        {
+            front = new Node(item);
+            rear = front;
+        }
+        else
+        {
+            Node *newnode = new Node(item);
+            newnode->link = front;
+            front = newnode;
+        }
+    }
+};
+int main()
+{
+    Queue q;
+    int opt, item;
+    while (true)
+    {
+        cout << "Queue Operations Menu:" << endl;
+        cout << "1. Enqueue" << endl;
+        cout << "2. Dequeue" << endl;
+        cout << "3. Add Front" << endl;
+        cout << "4. Remove Rear" << endl;
+        cout << "5. Print Queue" << endl;
+        cout << "6. Peek Front" << endl;
+        cout << "7. Peek Rear" << endl;
+        cout << "8. Size" << endl;
+        cout << "9. Check if Empty" << endl;
+        cout << "0. Exit" << endl;
+        cout << "Enter your choice: ";
+        numberValidation(opt);
+        switch (opt)
+        {
+        case 1:
+            cout << "Enter the item to enqueue: ";
+            cin >> item;
+            q.Enqueue(item);
+            break;
+        case 2:
+            cout << "Dequeued item: " << q.Dequeue() << endl;
+            break;
+        case 3:
+            cout << "Enter the item to add to front: ";
+            cin >> item;
+            q.add_front(item);
+            break;
+        case 4:
+            cout << "Removed rear item: " << q.remove_rear() << endl;
+            break;
+        case 5:
+            q.Print();
+            break;
+        case 6:
+            cout << "Front item: " << q.peek_front() << endl;
+            break;
+        case 7:
+            cout << "Rear item: " << q.peek_rear() << endl;
+            break;
+        case 8:
+            cout << "Size of queue: " << q.size() << endl;
+            break;
+        case 9:
+            if (q.is_empty())
+            {
+                cout << "Queue is empty" << endl;
+            }
+            else
+            {
+                cout << "Queue is not empty" << endl;
+            }
+            break;
+        case 0:
+            cout << "Exited" << endl;
+            return 0;
+        default:
+            cout << "INVALIDD!! Please Choose one of the Given Options" << endl;
+        }
+    }
+}
